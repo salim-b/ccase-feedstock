@@ -34,8 +34,10 @@ requirements:
 
 tests:
   - script:
-      - ccase --help
-      - ccase --version
+      - if: build_platform == host_platform
+        then:
+          - ccase --help
+          - ccase --version
   - package_contents:
       bin:
         - ccase
