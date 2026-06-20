@@ -13,23 +13,24 @@ build:
   number: 1
   script:
     env:
-      CARGO_PROFILE_RELEASE_STRIP: symbols
       CARGO_PROFILE_RELEASE_LTO: fat
+      CARGO_PROFILE_RELEASE_STRIP: symbols
     content:
       - if: unix
         then:
-          - cargo auditable install --locked --no-track --bins --root ${{ PREFIX }} --path .
-        else:
-          - cargo auditable install --locked --no-track --bins --root %LIBRARY_PREFIX% --path .
-      - cargo-bundle-licenses --format yaml --output ./THIRDPARTY.yml
+          - cargo auditable install --no-track --locked --bins --root="$PREFIX" --path=.
+      - if: win
+        then:
+          - cargo auditable install --no-track --locked --bins --root="%LIBRARY_PREFIX%" --path=.
+      - cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml
 
 requirements:
   build:
     - ${{ stdlib('c') }}
     - ${{ compiler('c') }}
     - ${{ compiler('rust') }}
-    - cargo-bundle-licenses
     - cargo-auditable
+    - cargo-bundle-licenses
 
 tests:
   - script:
@@ -41,7 +42,6 @@ tests:
       strict: true
 
 about:
-  homepage: https://github.com/stringcase/ccase
   summary: Command line interface to convert strings into any case
   description: |
     ccase is a command line utility for converting between string cases such as
@@ -51,6 +51,7 @@ about:
   license_file:
     - LICENSE.md
     - THIRDPARTY.yml
+  homepage: https://github.com/stringcase/ccase
   repository: https://github.com/stringcase/ccase
 
 extra:
